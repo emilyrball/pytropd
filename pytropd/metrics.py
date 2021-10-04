@@ -1,5 +1,7 @@
 # Written by Ori Adam Mar.21.2017
 # Edited by Alison Ming Jul.4.2017
+# Edited by Emily Ball Oct.4.2021 to generalize to planetary atmospheres
+
 from __future__ import division
 import numpy as np
 from functions import *
