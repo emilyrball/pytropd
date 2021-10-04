@@ -1,5 +1,6 @@
 # Written by Ori Adam Mar.21.2017
 # Edited by Alison Ming Jul.4.2017
+# Edited by Emily Ball Oct.4.2021 to generalize to planetary atmospheres
 
 from __future__ import division
 import numpy as np
@@ -100,7 +101,7 @@ def TropD_Calculate_Mon2Season(Fm, season=np.arange(12), m=0):
 
     
 
-def TropD_Calculate_StreamFunction(V, lat, lev):
+def TropD_Calculate_StreamFunction(V, lat, lev, **kwargs):
   ''' Calculate streamfunction by integrating meridional wind from top of the atmosphere to surface
 
       Args:
@@ -110,6 +111,10 @@ def TropD_Calculate_StreamFunction(V, lat, lev):
         lat: equally spaced latitude array
 
         lev: vertical level array in hPa
+        
+        radius: planetary radius in m (optional, default: 6.37122e6)
+        
+        grav: planetary surface gravity in m/s^2 (optional, default: 9.80616)
 
       Returns:
   
@@ -117,8 +122,8 @@ def TropD_Calculate_StreamFunction(V, lat, lev):
   '''
 
     
-  EarthRadius = 6371220.0
-  EarthGrav = 9.80616
+  Radius = kwargs.pop('radius', 6371220.0)
+  Grav = kwargs.pop('grav', 9.80616)
   B = np.ones(np.shape(V)) 
   # B = 0 for subsurface data
   B[np.isnan(V)]=0
@@ -126,7 +131,7 @@ def TropD_Calculate_StreamFunction(V, lat, lev):
 
   COS = np.repeat(np.cos(lat*np.pi/180), len(lev), axis=0).reshape(len(lat),len(lev))
 
-  psi = (EarthRadius/EarthGrav) * 2 * np.pi \
+  psi = (Radius/Grav) * 2 * np.pi \
        * sp.integrate.cumtrapz(B * V * COS, lev*100, axis=1, initial=0) 
   
   return psi
